@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "the backend of kfupm maps",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KFUPM-Maps/Backend.git"
+  },
+  "author": "Yousef Abdelaziz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KFUPM-Maps/Backend/issues"
+  },
+  "homepage": "https://github.com/KFUPM-Maps/Backend#readme"
+}
