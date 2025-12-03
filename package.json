@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "the backend of kfupm maps",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "node app.js"
+    "start": "cross-env NODE_ENV=production node app.js",
+    "dev": "cross-env NODE_ENV=development nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,18 @@
   "bugs": {
     "url": "https://github.com/KFUPM-Maps/Backend/issues"
   },
-  "homepage": "https://github.com/KFUPM-Maps/Backend#readme"
+  "homepage": "https://github.com/KFUPM-Maps/Backend#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
 }
