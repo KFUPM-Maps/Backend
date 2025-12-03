@@ -7,6 +7,9 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./controllers/auth.js";
 import testRouter from "./controllers/test.js";
+import accountRouter from "./controllers/account.js";
+import leaderboardRouter from "./controllers/leaderboard.js";
+import { requestLogger } from "./utils/logger.js";
 
 const app = express();
 
@@ -24,9 +27,16 @@ mongoose
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(requestLogger);
 
 app.use("/api/auth", authRouter);
 app.use("/api/test", testRouter);
+app.use("/api/account", accountRouter);
+app.use("/api/leaderboard", leaderboardRouter);
+
+app.use((request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+});
 
 app.listen(config.PORT, () => {
   console.log(`Server is running on port ${config.PORT}`);

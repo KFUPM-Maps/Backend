@@ -43,6 +43,7 @@ router.post("/signup", async (req, res) => {
         email: user.email,
         type: user.type,
         picture: user.picture,
+        score: user.score
       },
     });
   } catch (error) {
@@ -74,6 +75,7 @@ router.post("/login", async (req, res) => {
         email: user.email,
         type: user.type,
         picture: user.picture,
+        score: user.score
       },
     });
   } catch (error) {
