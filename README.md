@@ -19,8 +19,8 @@ This is the backend for the KFUPM Maps application, built using **Node.js**, **E
  ## Prerequisites
 Before running this project, ensure you have the following installed on your machine:
 * **Node.js** (v18 or higher recommended)
-* npm (Node Package Manager)
-* MongoDB (A local instance or a connection string for MongoDB Atlas)
+* **npm** (Node Package Manager)
+* **MongoDB** (A local instance or a connection string for MongoDB Atlas)
 
 ---
 
