@@ -1,7 +1,10 @@
 import Route from "../../models/Route.js";
 import { checkAuth, checkAdmin } from "../../utils/auth.js";
+import User from "../../models/user.js";
+import express from "express";
 
 const router = express.Router();
+
 router.get("/", async (req, res) => {
   try {
     const { firstBuilding, secondBuilding } = req.query;
@@ -15,18 +18,26 @@ router.get("/", async (req, res) => {
     const routes = await Route.find({
       firstBuilding,
       secondBuilding,
+      status: "approved",
     }).lean();
 
-    const formattedRoutes = routes.map((route) => ({
-      id: route._id,
-      title: route.title,
-      user: User.findById(route.userId).select("firstName lastName picture"),
-      firstBuilding: route.firstBuilding,
-      secondBuilding: route.secondBuilding,
-      steps: route.steps,
-      lastUpdated: route.updatedAt,
-      starsCount: route.starsCount,
-    }));
+    const formattedRoutes = [];
+
+    for (const route of routes) {
+      const routeUser = await User.findById(route.userId).select(
+        "firstName lastName picture"
+      );
+      formattedRoutes.push({
+        id: route._id,
+        title: route.title,
+        user: routeUser,
+        firstBuilding: route.firstBuilding,
+        secondBuilding: route.secondBuilding,
+        lastUpdated: route.updatedAt,
+        starsCount: route.starsCount,
+        status: route.status,
+      });
+    }
 
     return res.json(formattedRoutes);
   } catch (err) {
@@ -53,17 +64,23 @@ router.get("/myroutes", checkAuth, async (req, res) => {
       "firstName lastName picture"
     );
 
-    const formattedRoutes = routes.map((route) => ({
-      id: route._id,
-      title: route.title,
-      user: currentUser,
-      firstBuilding: route.firstBuilding,
-      secondBuilding: route.secondBuilding,
-      steps: route.steps,
-      lastUpdated: route.updatedAt,
-      starsCount: route.starsCount,
-      status: route.status,
-    }));
+    const formattedRoutes = [];
+
+    for (const route of routes) {
+      const routeUser = await User.findById(route.userId).select(
+        "firstName lastName picture"
+      );
+      formattedRoutes.push({
+        id: route._id,
+        title: route.title,
+        user: routeUser,
+        firstBuilding: route.firstBuilding,
+        secondBuilding: route.secondBuilding,
+        lastUpdated: route.updatedAt,
+        starsCount: route.starsCount,
+        status: route.status,
+      });
+    }
 
     return res.json(formattedRoutes);
   } catch (err) {
@@ -85,17 +102,23 @@ router.get("/manageroutes", checkAuth, checkAdmin, async (req, res) => {
       status: status,
     }).lean();
 
-    const formattedRoutes = routes.map((route) => ({
-      id: route._id,
-      title: route.title,
-      user: User.findById(route.userId).select("firstName lastName picture"),
-      firstBuilding: route.firstBuilding,
-      secondBuilding: route.secondBuilding,
-      steps: route.steps,
-      lastUpdated: route.updatedAt,
-      starsCount: route.starsCount,
-      status: route.status,
-    }));
+    const formattedRoutes = [];
+
+    for (const route of routes) {
+      const routeUser = await User.findById(route.userId).select(
+        "firstName lastName picture"
+      );
+      formattedRoutes.push({
+        id: route._id,
+        title: route.title,
+        user: routeUser,
+        firstBuilding: route.firstBuilding,
+        secondBuilding: route.secondBuilding,
+        lastUpdated: route.updatedAt,
+        starsCount: route.starsCount,
+        status: route.status,
+      });
+    }
 
     return res.json(formattedRoutes);
   } catch (err) {

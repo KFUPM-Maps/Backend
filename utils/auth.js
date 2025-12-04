@@ -62,4 +62,4 @@ const checkAdmin = (req, res, next) => {
   next();
 };
 
-export { checkAuth, checkAdmin };
+export { checkAuth, checkAdmin, checkAuthOptional };

@@ -1,7 +1,7 @@
 import express from "express";
 import { checkAuth } from "../utils/auth.js";
 import User from "../models/user.js";
-import { getSignedUrl } from "../utils/supabase.js";
+import { getSignedUrl, supabase } from "../utils/supabase.js";
 
 const router = express.Router();
 
@@ -27,11 +27,13 @@ router.get("/updateaccount", checkAuth, async (req, res) => {
 
 router.put("/updateaccount", checkAuth, async (req, res) => {
   try {
-    const { firstName, lastName, picture } = req.body;
+    const { firstName, lastName, Key } = req.body;
+
+    const { data } = supabase.storage.from("profilePictures").getPublicUrl(Key.slice(16));
 
     const user = await User.findByIdAndUpdate(
       req.user._id,
-      { firstName, lastName, picture },
+      { firstName, lastName, picture: data.publicUrl },
       { new: true, runValidators: true }
     ).select("firstName lastName picture email type");
 

@@ -10,6 +10,10 @@ import testRouter from "./controllers/test.js";
 import accountRouter from "./controllers/account.js";
 import leaderboardRouter from "./controllers/leaderboard.js";
 import { requestLogger } from "./utils/logger.js";
+import routeRouter from "./controllers/routes/route.js";
+import routesRouter from "./controllers/routes/routes.js";
+import routeLikeRouter from "./controllers/routes/routeLike.js";
+import manageRouteRouter from "./controllers/routes/manageRoute.js";
 
 const app = express();
 
@@ -33,6 +37,13 @@ app.use("/api/auth", authRouter);
 app.use("/api/test", testRouter);
 app.use("/api/account", accountRouter);
 app.use("/api/leaderboard", leaderboardRouter);
+
+//routes
+
+app.use("/api/routes", routesRouter);
+app.use("/api/routes", routeRouter);
+app.use("/api/routes", routeLikeRouter);
+app.use("/api/routes", manageRouteRouter);
 
 app.use((request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })

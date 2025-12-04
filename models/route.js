@@ -9,8 +9,8 @@ const stepSchema = new mongoose.Schema({
 const routeSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    firstBuilding: { type: String, required: true },
-    secondBuilding: { type: String, required: true },
+    firstBuilding: { type: String, required: true, uppercase: true },
+    secondBuilding: { type: String, required: true, uppercase: true },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -20,6 +20,7 @@ const routeSchema = new mongoose.Schema(
     steps: {
       type: [stepSchema],
       required: true,
+      default: [],
     },
 
     starsCount: {
@@ -34,6 +35,8 @@ const routeSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+routeSchema.index({ firstBuilding: 1, secondBuilding: 1 });
 
 const Route = mongoose.model("Route", routeSchema);
 

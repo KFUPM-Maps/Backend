@@ -1,10 +1,11 @@
 import Route from "../../models/Route.js";
 import RouteLike from "../../models/RouteLike.js";
 import { checkAuth } from "../../utils/auth.js";
+import express from "express";
 
 const router = express.Router();
 
-router.put("/:id", checkAuth, async (req, res) => {
+router.put("/like/:id", checkAuth, async (req, res) => {
   try {
     const routeId = req.params.id;
     const userId = req.user._id;
