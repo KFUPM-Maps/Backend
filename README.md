@@ -24,6 +24,14 @@ Before running this project, ensure you have the following installed on your mac
 
 ---
 
+## Installation
+
+1. **Clone ther repository**
+2. **Install depencies:**
+   Run the following command:
+   * npm install
+
+---
 
 ## end points
 
