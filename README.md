@@ -40,7 +40,7 @@ Before running this project, ensure you have the following installed on your mac
 ---
 
 ## Folders Structure:
-
+```
 Backend/
 ├── controllers/
 │   ├── routes/
@@ -67,7 +67,7 @@ Backend/
 ├── app.js
 ├── package-lock.json
 └── package.json
-
+```
 ---
 
 
