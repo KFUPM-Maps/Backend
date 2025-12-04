@@ -39,6 +39,38 @@ Before running this project, ensure you have the following installed on your mac
 
 ---
 
+## Folders Structure:
+
+Backend/
+├── controllers/
+│   ├── routes/
+│   │   ├── manageRoutes.js
+│   │   ├── route.js
+│   │   ├── routeLike.js
+│   │   └── routes.js
+│   ├── account.js
+│   ├── auth.js
+│   ├── leaderboard.js
+│   └── test.js
+├── models/
+│   ├── route.js
+│   ├── routeLike.js
+│   └── user.js
+├── utils/
+│   ├── auth.js
+│   ├── config.js
+│   ├── logger.js
+│   ├── supabase.js
+│   └── tokens.js
+├── .gitignore
+├── README.md
+├── app.js
+├── package-lock.json
+└── package.json
+
+---
+
+
 ## end points
 
 ### Auth
