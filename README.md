@@ -5,14 +5,13 @@ This is the backend for the KFUPM Maps application, built using **Node.js**, **E
 ## Table of Contents:
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
-* [Configuration](#configuration)
-* [Running the Application](#running the application)
-* [Folders Structure](#folders structure)
-* [API Documentation](#api documintation)
+* [Running the Application](#running-the-application)
+* [Folders Structure](#folders-structure)
+* [API Documentation](#api-documintation)
   * [Authentication](#authentication)
-  * [Account Management](#account management)
+  * [Account Management](#account-management)
   * [LeaderBoard](#leaderboard)
-  * [Routes Management](#routes management)
+  * [Routes Management](#routes-management)
 
  ---
 
@@ -30,6 +29,13 @@ Before running this project, ensure you have the following installed on your mac
 2. **Install depencies:**
    Run the following command:
    * npm install
+
+---
+
+## Running the Application:
+   To run the application use the following codes:
+   * npm run dev
+   * npm start
 
 ---
 
