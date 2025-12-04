@@ -16,7 +16,7 @@ This is the backend for the KFUPM Maps application, built using **Node.js**, **E
 
  ---
 
- ## Prereuisites
+ ## Prerequisites
 
 
 ## end points
