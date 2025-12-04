@@ -136,11 +136,13 @@ Put /updateaccount
 
 ```
 Post /refresh
+```
 
+```
 Post /logout
 ```
 
-### leaderboard
+### Leaderboard
 
 ```
 Get /users
@@ -149,7 +151,7 @@ Get /users
 ]
 ```
 
-### routes
+### Routes
 
 ```
 Get /routes
@@ -257,10 +259,14 @@ Put /routes/:id
 ```
 protected
 Put /routes/like/:id
+```
 
+```
 protected
 Delete /routes/:id
+```
 
+```
 protected - admin only
 Put /routes/manage/:id
 params: status
