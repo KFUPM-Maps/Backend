@@ -9,7 +9,6 @@ This is the backend for the KFUPM Maps application, built using **Node.js**, **E
 * [Folders Structure](#folders-structure)
 * [API Documentation](#api-documintation)
   * [Authentication](#authentication)
-  * [Account Management](#account-management)
   * [LeaderBoard](#leaderboard)
   * [Routes Management](#routes-management)
 
