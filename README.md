@@ -169,8 +169,6 @@ Put /routes/like/:id
 protected
 Delete /routes/:id
 
-protected
-Put /routes/approve/:id
-
-protected
-Put /routes/reject/:id
+protected - admin only
+Put /routes/manage/:id
+params: status
