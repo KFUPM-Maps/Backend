@@ -3,7 +3,7 @@
 This is the backend for the KFUPM Maps application, built using **Node.js**, **Express.js**, and **MongoDB** (with Mongoose). It provides RESTful APIs for user authentication, managing routes between buildings on campus, a leaderboard system, and administrative route management.
 
 ## Table of Contents:
-* Prerequisites
+* [Prerequisites](#prerequisites)
 * Installation
 * Configuration
 * Running the Application
@@ -13,6 +13,10 @@ This is the backend for the KFUPM Maps application, built using **Node.js**, **E
   * Account Management
   * LeaderBoard
   * Routes Management
+
+ ---
+
+ ## Prereuisites
 
 
 ## end points
