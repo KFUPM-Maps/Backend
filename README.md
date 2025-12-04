@@ -70,16 +70,18 @@ Backend/
 ```
 ---
 
-
-## end points
+## API Documintation
 
 ### Auth
+
+```
 Post /Login
 request
 {
     email,
     password
 }
+
 response
 {
     "id": "1",
@@ -92,6 +94,9 @@ response
     },
     "accessToken": "123456"
 }
+```
+
+```
 Post /signup
 req
 {
@@ -113,7 +118,9 @@ response
     },
     "accessToken": "123456"
 }
+```
 
+```
 protected
 get /updateaccount
 {
@@ -125,19 +132,26 @@ Put /updateaccount
 {
     {firstName, lastName}
 }
+```
 
+```
 Post /refresh
 
 Post /logout
+```
 
 ### leaderboard
+
+```
 Get /users
 [
     { firstName: "Yousef", lastName: "Alhajri", picture:"url", score: 150 }
 ]
-
+```
 
 ### routes
+
+```
 Get /routes
 params = firstBuilding, secondBuilding
 
@@ -156,7 +170,9 @@ params = firstBuilding, secondBuilding
       "starsCount": 75,
     }
 ]
+```
 
+```
 protected
 Get /myroutes
 params = status
@@ -176,7 +192,9 @@ params = status
       "status": "rejected"
     }
 ]
+```
 
+```
 protected - admin only
 Get /manageroutes
 params = status
@@ -196,9 +214,9 @@ params = status
       "status": "rejected"
     }
 ]
+```
 
-----
-
+```
 Get /routes/:id
 {
       "id": "21",
@@ -220,7 +238,9 @@ Get /routes/:id
       "starsCount": 75,
       "islikedByUser": false
 }
+```
 
+```
 protected
 Put /routes/:id
 {
@@ -232,7 +252,9 @@ Put /routes/:id
         "4": { "photo": "https://loremflickr.com/200/200/nature?random=5", "caption": "take the elevator to the second floor" }
       }
 }
+```
 
+```
 protected
 Put /routes/like/:id
 
@@ -242,3 +264,4 @@ Delete /routes/:id
 protected - admin only
 Put /routes/manage/:id
 params: status
+```
