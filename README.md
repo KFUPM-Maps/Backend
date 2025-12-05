@@ -3,22 +3,26 @@
 This is the backend for the KFUPM Maps application, built using **Node.js**, **Express.js**, and **MongoDB** (with Mongoose). It provides RESTful APIs for user authentication, managing routes between buildings on campus, a leaderboard system, and administrative route management.
 
 ## Table of Contents:
-* [Prerequisites](#prerequisites)
-* [Installation](#installation)
-* [Running the Application](#running-the-application)
-* [Folders Structure](#folders-structure)
-* [API Documentation](#api-documintation)
-  * [Authentication](#authentication)
-  * [LeaderBoard](#leaderboard)
-  * [Routes Management](#routes-management)
 
- ---
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Running the Application](#running-the-application)
+- [Folders Structure](#folders-structure)
+- [API Documentation](#api-documintation)
 
- ## Prerequisites
+  - [Authentication](#authentication)
+  - [LeaderBoard](#leaderboard)
+  - [Routes Management](#routes-management)
+
+  ***
+
+## Prerequisites
+
 Before running this project, ensure you have the following installed on your machine:
-* **Node.js** (v18 or higher recommended)
-* **npm** (Node Package Manager)
-* **MongoDB** (A local instance or a connection string for MongoDB Atlas)
+
+- **Node.js** (v18 or higher recommended)
+- **npm** (Node Package Manager)
+- **MongoDB** (A local instance or a connection string for MongoDB Atlas)
 
 ---
 
@@ -27,18 +31,21 @@ Before running this project, ensure you have the following installed on your mac
 1. **Clone ther repository**
 2. **Install depencies:**
    Run the following command:
-   * npm install
+   - npm install
 
 ---
 
 ## Running the Application:
-   To run the application use the following codes:
-   * npm run dev
-   * npm start
+
+To run the application use the following codes:
+
+- npm run dev
+- npm start
 
 ---
 
 ## Folders Structure:
+
 ```
 Backend/
 ├── controllers/
@@ -67,6 +74,7 @@ Backend/
 ├── package-lock.json
 └── package.json
 ```
+
 ---
 
 ## API Documintation
@@ -83,15 +91,16 @@ request
 
 response
 {
-    "id": "1",
+    accessToken,
     "user": {
-        "email": "yousef@example.com",
-        "firstName": "Yousef",
-        "lastName": "Abdelaziz",
-        "type": "admin",
-        "picture": "https://picsum.photos/200?random=1"
-    },
-    "accessToken": "123456"
+        id,
+        firstName
+        lastName
+        email,
+        type,
+        picture,
+        score
+    }
 }
 ```
 
@@ -107,21 +116,39 @@ req
 res
 response
 {
-    "id": "1",
+    accessToken,
     "user": {
-        "email": "yousef@example.com",
-        "firstName": "Yousef",
-        "lastName": "Abdelaziz",
-        "type": "admin",
-        "picture": "https://picsum.photos/200?random=1"
-    },
-    "accessToken": "123456"
+        id,
+        firstName
+        lastName
+        email,
+        type,
+        picture,
+        score
+    }
+}
+```
+
+```
+Post /refresh
+response
+{
+  accessToken
+}
+```
+
+```
+Post /logout
+response
+{
+  message
 }
 ```
 
 ```
 protected
 get /updateaccount
+response
 {
     {firstName, lastName, picture, presignedUrl}
 }
@@ -129,16 +156,8 @@ get /updateaccount
 protected
 Put /updateaccount
 {
-    {firstName, lastName}
+    {firstName, lastName, Key}
 }
-```
-
-```
-Post /refresh
-```
-
-```
-Post /logout
 ```
 
 ### Leaderboard
@@ -146,7 +165,7 @@ Post /logout
 ```
 Get /users
 [
-    { firstName: "Yousef", lastName: "Alhajri", picture:"url", score: 150 }
+    { firstName, lastName, picture, score}
 ]
 ```
 
@@ -157,19 +176,20 @@ Get /routes
 params = firstBuilding, secondBuilding
 
 [
-    {
-      "id": "1",
-      "title": "Fastest Route to Work",
-      "firstBuilding": "B58",
-      "secondBuilding": "B57",
-      "user": {
-        "firstName": "Majid",
-        "lastName": "Saleh",
-        "picture": "https://loremflickr.com/200/200/nature?random=1"
-      },
-      "lastUpdated": "08/11/24",
-      "starsCount": 75,
-    }
+  {
+    id,
+    title,
+    user:{
+      firstName,
+      lastName,
+      picture
+    },
+    firstBuilding,
+    secondBuilding,
+    lastUpdated,
+    starsCount,
+    status,
+  }
 ]
 ```
 
@@ -178,20 +198,20 @@ protected
 Get /myroutes
 params = status
 [
-    {
-      "id": "21",
-      "title": "Fastest Route to Work",
-      "firstBuilding": "B58",
-      "secondBuilding": "B57",
-      "user": {
-        "firstName": "Majid",
-        "lastName": "Saleh",
-        "picture": "https://loremflickr.com/200/200/nature?random=1"
-      },
-      "lastUpdated": "08/11/24",
-      "starsCount": 75,
-      "status": "rejected"
-    }
+  {
+    id,
+    title,
+    user:{
+      firstName,
+      lastName,
+      picture
+    },
+    firstBuilding,
+    secondBuilding,
+    lastUpdated,
+    starsCount,
+    status,
+  }
 ]
 ```
 
@@ -200,58 +220,73 @@ protected - admin only
 Get /manageroutes
 params = status
 [
-    {
-      "id": "21",
-      "title": "Fastest Route to Work",
-      "firstBuilding": "B58",
-      "secondBuilding": "B57",
-      "user": {
-        "firstName": "Majid",
-        "lastName": "Saleh",
-        "picture": "https://loremflickr.com/200/200/nature?random=1"
-      },
-      "lastUpdated": "08/11/24",
-      "starsCount": 75,
-      "status": "rejected"
-    }
+  {
+    id,
+    title,
+    user:{
+      firstName,
+      lastName,
+      picture
+    },
+    firstBuilding,
+    secondBuilding,
+    lastUpdated,
+    starsCount,
+    status,
+  }
 ]
 ```
 
 ```
 Get /routes/:id
 {
-      "id": "21",
-      "title": "Fastest Route to Work",
-      "firstBuilding": "B58",
-      "secondBuilding": "B57",
-      "user": {
-        "firstName": "Majid",
-        "lastName": "Saleh",
-        "picture": "https://loremflickr.com/200/200/nature?random=1"
-      },
-      "steps": {
-        "1": { "photo": "https://loremflickr.com/200/200/nature?random=2", "caption": "walk straight until you see the tall window" },
-        "2": { "photo": "https://loremflickr.com/200/200/nature?random=3", "caption": "turn left near the small staircase" },
-        "3": { "photo": "https://loremflickr.com/200/200/nature?random=4", "caption": "continue forward through the narrow hall" },
-        "4": { "photo": "https://loremflickr.com/200/200/nature?random=5", "caption": "take the elevator to the second floor" }
-      },
-      "lastUpdated": "08/11/24",
-      "starsCount": 75,
-      "islikedByUser": false
+  id,
+  title,
+  user:{
+    firstName,
+    lastName,
+    picture
+  },
+  firstBuilding,
+  secondBuilding,
+  steps:[
+    {index, caption, photo}
+  ],
+  lastUpdated,
+  starsCount,
+  status,
 }
 ```
 
 ```
 protected
+Post /routes/
+{ 
+  title, 
+  firstBuilding, 
+  secondBuilding, 
+  steps:[
+    {index, caption}
+  ]
+}
+```
+```
+protected
 Put /routes/:id
+{ 
+  title, 
+  steps:[
+    {index, caption}
+  ]
+}
+```
+```
+protected
+Put /routes/:id/photos
 {
-      "title": "Fastest Route to Work",
-      "steps": {
-        "1": { "photo": "https://loremflickr.com/200/200/nature?random=2", "caption": "walk straight until you see the tall window" },
-        "2": { "photo": "https://loremflickr.com/200/200/nature?random=3", "caption": "turn left near the small staircase" },
-        "3": { "photo": "https://loremflickr.com/200/200/nature?random=4", "caption": "continue forward through the narrow hall" },
-        "4": { "photo": "https://loremflickr.com/200/200/nature?random=5", "caption": "take the elevator to the second floor" }
-      }
+  photos:[
+    { stepId, Key }
+  ]
 }
 ```
 
