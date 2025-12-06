@@ -2,6 +2,7 @@ import express from "express";
 import { checkAuth } from "../utils/auth.js";
 import User from "../models/user.js";
 import { getSignedUrl, supabase } from "../utils/supabase.js";
+import config from "../utils/config.js";
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ router.put("/updateaccount", checkAuth, async (req, res) => {
     let updateData = {};
 
     if(Key){
-      const { data } = supabase.storage.from("profilePictures").getPublicUrl(Key.slice(16));
+      const { data } = supabase.storage.from(config.PROFILE_PIC_BUCKET).getPublicUrl(Key.slice(config.PROFILE_PIC_BUCKET.length + 1));
       let newPictureUrl = data.publicUrl;
       updateData.picture = newPictureUrl;
     }

@@ -276,7 +276,10 @@ Put /routes/:id
 { 
   title, 
   steps:[
-    {index, caption}
+    {id, index, caption} // to update
+    {index, caption} // to create
+    {id, index, caption, photo} // to do nothing
+    //to delete don't add the step
   ]
 }
 ```

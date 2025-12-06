@@ -5,6 +5,7 @@ import { checkAuth, checkAuthOptional } from "../../utils/auth.js";
 import { supabase } from "../../utils/supabase.js";
 import express from "express";
 import User from "../../models/user.js";
+import config  from "../../utils/config.js";
 
 const router = express.Router();
 
@@ -42,7 +43,12 @@ router.get("/:id", checkAuthOptional, async (req, res) => {
       user: routeUser,
       firstBuilding: route.firstBuilding,
       secondBuilding: route.secondBuilding,
-      steps: route.steps,
+      steps: route.steps.map((step) => ({
+        id: step._id,
+        index: step.index,
+        caption: step.caption,
+        photo: step.photo,
+      })),
       lastUpdated: route.updatedAt,
       starsCount: route.starsCount,
       isLikedByUser: isLikedBycurrentUser,
@@ -82,41 +88,14 @@ router.post("/", checkAuth, async (req, res) => {
       })),
     });
 
-    // Clear all existing step photos in Supabase
-    const folderPath = `${route._id}/steps`;
-    const { data: existingFiles, error: listError } = await supabase.storage
-      .from("routes")
-      .list(folderPath, { recursive: true });
-
-    if (listError) {
-      console.error("Error listing files:", listError);
-      return res.status(500).json({ message: "Failed to list existing files" });
-    }
-
-    if (existingFiles.length > 0) {
-      const filePaths = existingFiles.map(
-        (file) => `${folderPath}/${file.name}`
-      );
-      const { error: deleteError } = await supabase.storage
-        .from("routes")
-        .remove(filePaths);
-
-      if (deleteError) {
-        console.error("Error deleting files:", deleteError);
-        return res
-          .status(500)
-          .json({ message: "Failed to delete existing photos" });
-      }
-    }
-
     const uploads = [];
 
     for (const step of route.steps) {
       const filePath = `${route._id}/steps/${step._id}.jpg`;
 
       const { data, error } = await supabase.storage
-        .from("routes")
-        .createSignedUploadUrl(filePath);
+        .from(config.ROUTE_PHOTO_BUCKET)
+        .createSignedUploadUrl(filePath, { upsert: true });
 
       if (error) {
         console.error(error);
@@ -142,6 +121,35 @@ router.post("/", checkAuth, async (req, res) => {
   }
 });
 
+async function deleteUnusedStepPhotos(routeId, stepsArray) {
+  const bucket = config.ROUTE_PHOTO_BUCKET;
+
+  const allowedFiles = stepsArray
+    .map((s) => `${s._id}.jpg`);
+
+  const { data: allFiles, error: listErr } = await supabase.storage
+    .from(bucket)
+    .list(`${routeId}/steps`, { limit: 1000 });
+
+  if (listErr) throw listErr;
+
+  const toDelete = allFiles
+    .map((file) => `${routeId}/steps/${file.name}`)
+    .filter((filePath) => !allowedFiles.includes(filePath.split("/").pop()));
+
+  if (toDelete.length === 0) {
+    return { success: true, deleted: [] };
+  }
+
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .remove(toDelete);
+
+  if (error) throw error;
+
+  return { success: true, deleted: toDelete };
+}
+
 router.put("/:routeId", checkAuth, async (req, res) => {
   try {
     const { routeId } = req.params;
@@ -150,7 +158,7 @@ router.put("/:routeId", checkAuth, async (req, res) => {
     if (
       !Array.isArray(steps) ||
       steps.length === 0 ||
-      steps.some((s) => s.index == null || !s.caption)
+      steps.some((s) => s.index == null || !s.caption || (s.id && !mongoose.Types.ObjectId.isValid(s.id)))
     ) {
       return res.status(400).json({ message: "Invalid steps array" });
     }
@@ -163,35 +171,9 @@ router.put("/:routeId", checkAuth, async (req, res) => {
       return res.status(403).json({ message: "Unauthorized" });
     }
     
-    // Clear all existing step photos in Supabase
-    const folderPath = `${route._id}/steps`;
-    const { data: existingFiles, error: listError } = await supabase.storage
-      .from("routes")
-      .list(folderPath, { recursive: true });
-
-    if (listError) {
-      console.error("Error listing files:", listError);
-      return res.status(500).json({ message: "Failed to list existing files" });
-    }
-
-    if (existingFiles.length > 0) {
-      const filePaths = existingFiles.map(
-        (file) => `${folderPath}/${file.name}`
-      );
-      const { error: deleteError } = await supabase.storage
-        .from("routes")
-        .remove(filePaths);
-
-      if (deleteError) {
-        console.error("Error deleting files:", deleteError);
-        return res
-          .status(500)
-          .json({ message: "Failed to delete existing photos" });
-      }
-    }
-    
     route.title = title || route.title;
     route.steps = steps.map((s) => ({
+      _id: s.id ? mongoose.Types.ObjectId(s.id) : mongoose.Types.ObjectId(),
       index: s.index,
       caption: s.caption,
       photo: s.photo || "pending",
@@ -203,11 +185,14 @@ router.put("/:routeId", checkAuth, async (req, res) => {
     const uploads = [];
 
     for (const step of route.steps) {
+      if (step.photo && step.photo !== "pending") {
+        continue;
+      }
       const filePath = `${route._id}/steps/${step._id}.jpg`;
 
       const { data, error } = await supabase.storage
-        .from("routes")
-        .createSignedUploadUrl(filePath);
+        .from(config.ROUTE_PHOTO_BUCKET)
+        .createSignedUploadUrl(filePath, { upsert: true });
 
       if (error) {
         console.error(error);
@@ -243,6 +228,10 @@ router.put("/:routeId/photos", checkAuth, async (req, res) => {
     if (!photos || !Array.isArray(photos)) {
       return res.status(400).json({ message: "Photos array is required" });
     }
+    if(photos.some(({ stepId, Key }) => !mongoose.Types.ObjectId.isValid(stepId) || !Key)) {
+      console.log(photos);
+      return res.status(400).json({ message: "Invalid photos array" });
+    }
 
     const route = await Route.findById(routeId);
     if (!route) {
@@ -257,13 +246,15 @@ router.put("/:routeId/photos", checkAuth, async (req, res) => {
       const step = route.steps.id(stepId);
       if (step) {
         const { data } = supabase.storage
-          .from("routes")
-          .getPublicUrl(Key.slice(7));
+          .from(config.ROUTE_PHOTO_BUCKET)
+          .getPublicUrl(Key.slice(config.ROUTE_PHOTO_BUCKET.length + 1));
         step.photo = data.publicUrl;
       }
     }
 
     await route.save();
+
+    await deleteUnusedStepPhotos(route._id, route.steps);
 
     return res.json({
       message: "All step photos updated successfully",
@@ -296,7 +287,7 @@ router.delete("/:id", checkAuth, async (req, res) => {
     const folderPath = `${routeId}/steps`;
 
     const { data: files, error: listError } = await supabase.storage
-      .from("routes")
+      .from(config.ROUTE_PHOTO_BUCKET)
       .list(folderPath, { recursive: true });
 
     if (listError) {
@@ -309,7 +300,7 @@ router.delete("/:id", checkAuth, async (req, res) => {
       const filePaths = files.map((file) => `${folderPath}/${file.name}`);
 
       const { error: deleteError } = await supabase.storage
-        .from("routes")
+        .from(config.ROUTE_PHOTO_BUCKET)
         .remove(filePaths);
 
       if (deleteError) {
