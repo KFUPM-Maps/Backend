@@ -1,6 +1,6 @@
 import Route from "../../models/Route.js";
 import { checkAuth, checkAdmin } from "../../utils/auth.js";
-import User from "../../models/user.js";
+import User from "../../models/User.js";
 import express from "express";
 
 const router = express.Router();

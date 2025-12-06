@@ -1,5 +1,5 @@
 import Route from "../../models/Route.js";
-import User from "../../models/user.js";
+import User from "../../models/User.js";
 import { checkAuth, checkAdmin } from "../../utils/auth.js";
 import express from "express";
 import mongoose from "mongoose";
