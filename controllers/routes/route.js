@@ -4,8 +4,8 @@ import RouteLike from "../../models/RouteLike.js";
 import { checkAuth, checkAuthOptional } from "../../utils/auth.js";
 import { supabase } from "../../utils/supabase.js";
 import express from "express";
-import User from "../../models/user.js";
-import config  from "../../utils/config.js";
+import User from "../../models/User.js";
+import config from "../../utils/config.js";
 
 const router = express.Router();
 
@@ -124,8 +124,7 @@ router.post("/", checkAuth, async (req, res) => {
 async function deleteUnusedStepPhotos(routeId, stepsArray) {
   const bucket = config.ROUTE_PHOTO_BUCKET;
 
-  const allowedFiles = stepsArray
-    .map((s) => `${s._id}.jpg`);
+  const allowedFiles = stepsArray.map((s) => `${s._id}.jpg`);
 
   const { data: allFiles, error: listErr } = await supabase.storage
     .from(bucket)
@@ -141,9 +140,7 @@ async function deleteUnusedStepPhotos(routeId, stepsArray) {
     return { success: true, deleted: [] };
   }
 
-  const { data, error } = await supabase.storage
-    .from(bucket)
-    .remove(toDelete);
+  const { data, error } = await supabase.storage.from(bucket).remove(toDelete);
 
   if (error) throw error;
 
@@ -158,7 +155,12 @@ router.put("/:routeId", checkAuth, async (req, res) => {
     if (
       !Array.isArray(steps) ||
       steps.length === 0 ||
-      steps.some((s) => s.index == null || !s.caption || (s.id && !mongoose.Types.ObjectId.isValid(s.id)))
+      steps.some(
+        (s) =>
+          s.index == null ||
+          !s.caption ||
+          (s.id && !mongoose.Types.ObjectId.isValid(s.id))
+      )
     ) {
       return res.status(400).json({ message: "Invalid steps array" });
     }
@@ -170,7 +172,7 @@ router.put("/:routeId", checkAuth, async (req, res) => {
     if (route.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Unauthorized" });
     }
-    
+
     route.title = title || route.title;
     route.steps = steps.map((s) => ({
       _id: s.id ? mongoose.Types.ObjectId(s.id) : mongoose.Types.ObjectId(),
@@ -181,7 +183,6 @@ router.put("/:routeId", checkAuth, async (req, res) => {
 
     await route.save();
 
-    
     const uploads = [];
 
     for (const step of route.steps) {
@@ -205,7 +206,6 @@ router.put("/:routeId", checkAuth, async (req, res) => {
         uploadUrl: data.signedUrl,
         filePath,
       });
-
     }
 
     return res.status(201).json({
@@ -217,7 +217,6 @@ router.put("/:routeId", checkAuth, async (req, res) => {
     console.error(err);
     return res.status(500).json({ message: "Server error" });
   }
-
 });
 
 router.put("/:routeId/photos", checkAuth, async (req, res) => {
@@ -228,7 +227,11 @@ router.put("/:routeId/photos", checkAuth, async (req, res) => {
     if (!photos || !Array.isArray(photos)) {
       return res.status(400).json({ message: "Photos array is required" });
     }
-    if(photos.some(({ stepId, Key }) => !mongoose.Types.ObjectId.isValid(stepId) || !Key)) {
+    if (
+      photos.some(
+        ({ stepId, Key }) => !mongoose.Types.ObjectId.isValid(stepId) || !Key
+      )
+    ) {
       console.log(photos);
       return res.status(400).json({ message: "Invalid photos array" });
     }

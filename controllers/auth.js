@@ -1,6 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import User from "../models/user.js";
+import User from "../models/User.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/tokens.js";
 
 const router = express.Router();
@@ -43,7 +43,7 @@ router.post("/signup", async (req, res) => {
         email: user.email,
         type: user.type,
         picture: user.picture,
-        score: user.score
+        score: user.score,
       },
     });
   } catch (error) {
@@ -75,7 +75,7 @@ router.post("/login", async (req, res) => {
         email: user.email,
         type: user.type,
         picture: user.picture,
-        score: user.score
+        score: user.score,
       },
     });
   } catch (error) {

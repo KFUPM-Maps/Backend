@@ -1,6 +1,6 @@
 import express from "express";
 import { checkAuth } from "../utils/auth.js";
-import User from "../models/user.js";
+import User from "../models/User.js";
 import { getSignedUrl, supabase } from "../utils/supabase.js";
 import config from "../utils/config.js";
 
@@ -31,8 +31,10 @@ router.put("/updateaccount", checkAuth, async (req, res) => {
     const { firstName, lastName, Key } = req.body;
     let updateData = {};
 
-    if(Key){
-      const { data } = supabase.storage.from(config.PROFILE_PIC_BUCKET).getPublicUrl(Key.slice(config.PROFILE_PIC_BUCKET.length + 1));
+    if (Key) {
+      const { data } = supabase.storage
+        .from(config.PROFILE_PIC_BUCKET)
+        .getPublicUrl(Key.slice(config.PROFILE_PIC_BUCKET.length + 1));
       let newPictureUrl = data.publicUrl;
       updateData.picture = newPictureUrl;
     }
@@ -40,11 +42,10 @@ router.put("/updateaccount", checkAuth, async (req, res) => {
     if (firstName) updateData.firstName = firstName;
     if (lastName) updateData.lastName = lastName;
 
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
-      updateData,
-      { new: true, runValidators: true }
-    ).select("firstName lastName picture email type");
+    const user = await User.findByIdAndUpdate(req.user._id, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("firstName lastName picture email type");
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
@@ -57,7 +58,7 @@ router.put("/updateaccount", checkAuth, async (req, res) => {
         email: user.email,
         type: user.type,
         picture: user.picture,
-        score: user.score
+        score: user.score,
       },
     });
   } catch (err) {
