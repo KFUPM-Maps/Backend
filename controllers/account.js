@@ -28,12 +28,20 @@ router.get("/updateaccount", checkAuth, async (req, res) => {
 router.put("/updateaccount", checkAuth, async (req, res) => {
   try {
     const { firstName, lastName, Key } = req.body;
+    let updateData = {};
 
-    const { data } = supabase.storage.from("profilePictures").getPublicUrl(Key.slice(16));
+    if(Key){
+      const { data } = supabase.storage.from("profilePictures").getPublicUrl(Key.slice(16));
+      let newPictureUrl = data.publicUrl;
+      updateData.picture = newPictureUrl;
+    }
+
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
 
     const user = await User.findByIdAndUpdate(
       req.user._id,
-      { firstName, lastName, picture: data.publicUrl },
+      updateData,
       { new: true, runValidators: true }
     ).select("firstName lastName picture email type");
 
@@ -48,6 +56,7 @@ router.put("/updateaccount", checkAuth, async (req, res) => {
         email: user.email,
         type: user.type,
         picture: user.picture,
+        score: user.score
       },
     });
   } catch (err) {

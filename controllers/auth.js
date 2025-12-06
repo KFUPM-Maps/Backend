@@ -8,7 +8,7 @@ const router = express.Router();
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "none",
+  sameSite: "lax",
   path: "/",
 };
 
@@ -85,6 +85,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/refresh", (req, res) => {
   const token = req.cookies.refreshToken;
+  console.log("Refresh token cookie:", req.cookies.refreshToken);
 
   if (!token) return res.status(401).json({ message: "Missing refresh token" });
 

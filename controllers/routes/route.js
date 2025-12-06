@@ -290,7 +290,7 @@ router.delete("/:id", checkAuth, async (req, res) => {
     }
 
     if (route.userId.toString() !== userId.toString()) {
-      return res.status(401).json({ message: "Unauthorized delete request" });
+      return res.status(400).json({ message: "Unauthorized delete request" });
     }
 
     const folderPath = `${routeId}/steps`;
